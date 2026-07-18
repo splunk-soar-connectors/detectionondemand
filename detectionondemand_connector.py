@@ -5,6 +5,8 @@
 # Python 3 Compatibility imports
 from __future__ import print_function, unicode_literals
 
+from urllib.parse import quote
+
 # Phantom App imports
 import phantom.app as phantom
 from phantom.vault import Vault
@@ -364,7 +366,7 @@ class DetectionOnDemandConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        report_id = param['report_id']
+        report_id = quote(str(param['report_id']), safe='')
         # Integer Validation for 'presigned_url_expiry' parameter
         expiry = param['presigned_url_expiry']
         ret_val, expiry = self._validate_integer(action_result, expiry, PRESIGNED_URL_EXPIRY_KEY)
