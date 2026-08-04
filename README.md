@@ -1,7 +1,7 @@
 # Detection on Demand
 
 Publisher: FireEye <br>
-Connector Version: 2.0.0 <br>
+Connector Version: 3.0.0 <br>
 Product Vendor: FireEye <br>
 Product Name: Detection on Demand <br>
 Minimum Product Version: 4.8.24304
