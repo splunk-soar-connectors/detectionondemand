@@ -20,7 +20,7 @@
 import json
 import sys
 import time
-from urllib.parse import quote
+import uuid
 
 # Phantom App imports
 import phantom.app as phantom
@@ -37,6 +37,15 @@ from detectionondemand_consts import *
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
+
+
+def _canonical_report_id(value):
+    """Return a canonical Detection on Demand UUID or reject the path value."""
+    raw_value = str(value)
+    canonical_value = str(uuid.UUID(raw_value))
+    if raw_value.lower() != canonical_value:
+        raise ValueError("Report ID must be a canonical UUID")
+    return canonical_value
 
 
 class DetectionOnDemandConnector(BaseConnector):
@@ -352,7 +361,10 @@ class DetectionOnDemandConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        report_id = quote(str(param["report_id"]), safe="")
+        try:
+            report_id = _canonical_report_id(param["report_id"])
+        except (TypeError, ValueError, AttributeError):
+            return action_result.set_status(phantom.APP_ERROR, "Report ID must be a canonical UUID")
         # Integer Validation for 'presigned_url_expiry' parameter
         expiry = param["presigned_url_expiry"]
         ret_val, expiry = self._validate_integer(action_result, expiry, PRESIGNED_URL_EXPIRY_KEY)
